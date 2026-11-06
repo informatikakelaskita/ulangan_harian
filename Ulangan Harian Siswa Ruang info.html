@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ulangan Harian Siswa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#00f0ff;
+    --primary-dark:#0891b2;
+    --secondary:#a855f7;
+    --accent:#ff2e97;
+    --success:#22ff88;
+    --danger:#ff3d5a;
+    --warning:#ffb800;
+    --bg-deep:#05060f;
+    --bg-panel:#0a0c1c;
+    --card:rgba(15,18,38,0.72);
+    --border:rgba(0,240,255,0.22);
+    --text:#e8ecff;
+    --muted:#8892b0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Rajdhani','Segoe UI',Tahoma,sans-serif}
+  html,body{overflow-x:hidden}
+  body{
+    background:var(--bg-deep);
+    color:var(--text);
+    min-height:100vh;
+    padding:20px;
+    position:relative;
+    letter-spacing:.3px;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(0,240,255,0.20), transparent 38%),
+      radial-gradient(circle at 85% 20%, rgba(168,85,247,0.20), transparent 42%),
+      radial-gradient(circle at 50% 90%, rgba(255,46,151,0.15), transparent 48%),
+      linear-gradient(180deg,#05060f 0%,#0a0a1f 55%,#0d0618 100%);
+    background-attachment:fixed;
+  }
+  body::after{
+    content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(0,240,255,0.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,240,255,0.05) 1px,transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(circle at 50% 35%,#000 0%,transparent 78%);
+    -webkit-mask-image:radial-gradient(circle at 50% 35%,#000 0%,transparent 78%);
+    animation:gridMove 30s linear infinite;
+  }
+  @keyframes gridMove{from{background-position:0 0}to{background-position:44px 44px}}
+
+  .container{max-width:1200px;margin:0 auto;position:relative;z-index:1}
+
+  header{
+    background:linear-gradient(135deg,rgba(15,18,38,0.85),rgba(25,12,48,0.85));
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    padding:20px 30px;
+    border-radius:18px;
+    border:1px solid var(--border);
+    box-shadow:0 0 30px rgba(0,240,255,0.15), inset 0 0 40px rgba(168,85,247,0.08);
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:22px;flex-wrap:wrap;gap:12px;position:relative;overflow:hidden;
+  }
+  header::after{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(0,240,255,0.06),transparent);
+    transform:translateX(-100%);
+    animation:shine 6s ease-in-out infinite;
+  }
+  @keyframes shine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+  .header-title{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+  .header-logo{
+    width:62px;height:62px;display:flex;align-items:center;justify-content:center;
+    font-size:2.2em;border-radius:14px;overflow:hidden;flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,240,255,0.15),rgba(168,85,247,0.15));
+    border:1px solid rgba(0,240,255,0.4);
+    box-shadow:0 0 20px rgba(0,240,255,0.4), inset 0 0 20px rgba(168,85,247,0.2);
+  }
+  .header-logo img{width:100%;height:100%;object-fit:contain}
+  header h1{
+    font-family:'Orbitron',sans-serif;font-weight:800;
+    font-size:1.4em;letter-spacing:1.5px;
+    background:linear-gradient(90deg,#00f0ff,#a855f7,#ff2e97);
+    background-size:200% auto;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:gradShift 5s linear infinite;
+    text-transform:uppercase;
+  }
+  @keyframes gradShift{to{background-position:200% center}}
+  header .info{color:var(--muted);font-size:.85em;letter-spacing:1px;font-weight:600}
+
+  .card{
+    background:var(--card);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    padding:30px;border-radius:18px;
+    border:1px solid var(--border);
+    box-shadow:0 10px 40px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,240,255,0.04);
+    margin-bottom:20px;
+    position:relative;
+  }
+
+  .btn{
+    padding:11px 22px;border:none;border-radius:11px;cursor:pointer;
+    font-weight:700;font-size:.95em;letter-spacing:.5px;
+    transition:all .25s;display:inline-flex;align-items:center;gap:8px;
+    font-family:'Rajdhani',sans-serif;text-transform:uppercase;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{
+    background:linear-gradient(135deg,#00f0ff,#0891b2);color:#001018;
+    box-shadow:0 0 18px rgba(0,240,255,0.45);
+  }
+  .btn-primary:hover{box-shadow:0 0 30px rgba(0,240,255,0.75)}
+  .btn-success{
+    background:linear-gradient(135deg,#22ff88,#059669);color:#00180c;
+    box-shadow:0 0 18px rgba(34,255,136,0.4);
+  }
+  .btn-success:hover{box-shadow:0 0 30px rgba(34,255,136,0.7)}
+  .btn-danger{
+    background:linear-gradient(135deg,#ff3d5a,#b91c1c);color:#fff;
+    box-shadow:0 0 15px rgba(255,61,90,0.4);
+  }
+  .btn-warning{
+    background:linear-gradient(135deg,#ffb800,#d97706);color:#1a0f00;
+    box-shadow:0 0 15px rgba(255,184,0,0.4);
+  }
+  .btn-secondary{
+    background:linear-gradient(135deg,#475569,#334155);color:#e2e8f0;
+    box-shadow:0 0 12px rgba(100,116,139,0.3);
+  }
+  .btn-sm{padding:6px 12px;font-size:.82em;border-radius:8px}
+  .btn-block{width:100%;justify-content:center;padding:15px}
+
+  select,input,textarea{
+    width:100%;padding:11px 14px;
+    background:rgba(8,10,24,0.85);
+    color:var(--text);
+    border:1px solid rgba(0,240,255,0.22);
+    border-radius:11px;font-size:.95em;outline:none;
+    transition:all .2s;font-family:'Rajdhani',sans-serif;font-weight:600;
+  }
+  select option{background:#0d0f1f;color:var(--text)}
+  select:focus,input:focus,textarea:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(0,240,255,0.18),0 0 20px rgba(0,240,255,0.25);
+  }
+  label{display:block;margin-bottom:7px;font-weight:700;color:var(--text);font-size:.92em;letter-spacing:.5px}
+  .form-group{margin-bottom:16px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:700px){.grid-2,.grid-3{grid-template-columns:1fr}}
+  @media(max-width:600px){
+    .soal-text{font-size:1.1em;line-height:1.7}
+    .pilihan{font-size:1.02em;padding:13px 16px}
+  }
+
+  .hero-ai{
+    position:relative;border-radius:22px;overflow:hidden;
+    min-height:320px;display:flex;align-items:center;
+    padding:44px 40px;margin-bottom:22px;
+    background:
+      radial-gradient(circle at 18% 25%,rgba(0,240,255,0.30),transparent 42%),
+      radial-gradient(circle at 82% 72%,rgba(168,85,247,0.32),transparent 45%),
+      radial-gradient(circle at 55% 50%,rgba(255,46,151,0.15),transparent 60%),
+      linear-gradient(135deg,#060a18 0%,#0d0a24 55%,#13081a 100%);
+    border:1px solid rgba(0,240,255,0.35);
+    box-shadow:0 0 50px rgba(0,240,255,0.25), inset 0 0 80px rgba(168,85,247,0.12);
+  }
+  .hero-ai.has-img{
+    background-image:
+      linear-gradient(180deg,rgba(5,6,15,0.72),rgba(5,6,15,0.88)),
+      var(--hero-img);
+    background-size:cover;background-position:center;
+  }
+  .hero-ai::after{
+    content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
+    background:linear-gradient(180deg,transparent 60%,rgba(5,6,15,0.55));
+  }
+  .ai-net{
+    position:absolute;inset:0;width:100%;height:100%;
+    opacity:.55;z-index:0;pointer-events:none;
+  }
+  .ai-net line{animation:dashLine 6s linear infinite}
+  @keyframes dashLine{
+    0%{stroke-opacity:.15}
+    50%{stroke-opacity:.55}
+    100%{stroke-opacity:.15}
+  }
+  .ai-net circle{animation:pulseNode 3s ease-in-out infinite}
+  @keyframes pulseNode{
+    0%,100%{opacity:.4;transform:scale(1)}
+    50%{opacity:1;transform:scale(1.25)}
+  }
+  .ai-net circle{transform-box:fill-box;transform-origin:center}
+  .orb{
+    position:absolute;border-radius:50%;filter:blur(50px);
+    z-index:1;pointer-events:none;opacity:.7;
+  }
+  .orb1{width:200px;height:200px;background:#00f0ff;top:-50px;left:8%;animation:float1 12s ease-in-out infinite}
+  .orb2{width:260px;height:260px;background:#a855f7;bottom:-80px;right:6%;animation:float2 15s ease-in-out infinite}
+  .orb3{width:150px;height:150px;background:#ff2e97;top:40%;left:55%;animation:float1 10s ease-in-out infinite reverse}
+  @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+  @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+  .scan{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(180deg,transparent 0%,rgba(0,240,255,0.08) 50%,transparent 100%);
+    height:30%;animation:scanMove 7s linear infinite;
+  }
+  @keyframes scanMove{0%{transform:translateY(-100%)}100%{transform:translateY(400%)}}
+  .hero-content{position:relative;z-index:3;max-width:640px}
+  .hero-badge{
+    display:inline-block;padding:6px 16px;border-radius:20px;
+    font-size:.75em;font-weight:800;letter-spacing:3px;
+    color:#001018;
+    background:linear-gradient(90deg,#00f0ff,#a855f7);
+    box-shadow:0 0 20px rgba(0,240,255,0.6);
+    margin-bottom:16px;
+    text-transform:uppercase;
+    font-family:'Orbitron',sans-serif;
+  }
+  .hero-h1{
+    font-family:'Orbitron',sans-serif;font-weight:900;
+    font-size:2.2em;line-height:1.15;margin-bottom:14px;
+    background:linear-gradient(90deg,#fff,#00f0ff,#a855f7);
+    background-size:200% auto;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:gradShift 6s linear infinite;
+    text-shadow:0 0 30px rgba(0,240,255,0.3);
+    letter-spacing:1px;
+  }
+  .hero-p{
+    color:#b8c2e0;font-size:1.05em;line-height:1.6;font-weight:500;
+    text-shadow:0 2px 8px rgba(0,0,0,0.6);
+  }
+  @media(max-width:600px){
+    .hero-h1{font-size:1.5em}
+    .hero-ai{padding:30px 22px;min-height:260px}
+  }
+
+  .menu-color{
+    position:relative;border-radius:22px;padding:32px;overflow:hidden;
+    background:
+      radial-gradient(circle at 0% 0%,rgba(0,240,255,0.25),transparent 45%),
+      radial-gradient(circle at 100% 100%,rgba(255,46,151,0.22),transparent 45%),
+      radial-gradient(circle at 50% 50%,rgba(168,85,247,0.18),transparent 55%),
+      linear-gradient(135deg,rgba(18,22,52,0.92),rgba(35,15,60,0.92));
+    border:1px solid rgba(0,240,255,0.3);
+    box-shadow:0 0 40px rgba(0,240,255,0.15), inset 0 0 60px rgba(168,85,247,0.1);
+  }
+  .menu-color::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(0,240,255,0.06) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,240,255,0.06) 1px,transparent 1px);
+    background-size:30px 30px;
+    mask-image:radial-gradient(circle at 50% 50%,#000 20%,transparent 90%);
+    -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 20%,transparent 90%);
+    opacity:.6;
+  }
+  .menu-head{display:flex;align-items:center;gap:16px;margin-bottom:22px;position:relative;z-index:1}
+  .menu-icon{
+    font-size:2em;width:64px;height:64px;display:flex;align-items:center;justify-content:center;
+    border-radius:16px;flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,240,255,0.25),rgba(168,85,247,0.25));
+    border:1px solid rgba(0,240,255,0.45);
+    box-shadow:0 0 25px rgba(0,240,255,0.4);
+    animation:pulseIcon 3s ease-in-out infinite;
+  }
+  @keyframes pulseIcon{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  .menu-head h2{
+    font-family:'Orbitron',sans-serif;font-size:1.35em;font-weight:800;
+    color:#fff;letter-spacing:1px;margin-bottom:4px;
+    text-shadow:0 0 20px rgba(0,240,255,0.4);
+  }
+  .menu-head p{color:#b8c2e0;font-size:.92em;font-weight:500}
+  .menu-color .form-group{position:relative;z-index:1}
+  .menu-color label{color:#c9d4f5}
+  .btn-launch{
+    position:relative;z-index:1;width:100%;justify-content:center;
+    padding:16px;font-size:1.05em;font-weight:800;letter-spacing:2px;
+    margin-top:10px;border-radius:14px;
+    background:linear-gradient(90deg,#00f0ff,#a855f7,#ff2e97);
+    background-size:200% auto;
+    color:#001018;
+    box-shadow:0 0 30px rgba(0,240,255,0.55),0 0 60px rgba(168,85,247,0.3);
+    font-family:'Orbitron',sans-serif;
+    animation:gradShift 4s linear infinite;
+  }
+  .btn-launch:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 40px rgba(0,240,255,0.85),0 0 80px rgba(255,46,151,0.4);
+  }
+
+  .ujian-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
+  .ujian-sidebar{position:sticky;top:20px}
+  @media(max-width:900px){.ujian-layout{grid-template-columns:1fr}.ujian-sidebar{position:static}}
+  .peta-soal{display:grid;grid-template-columns:repeat(auto-fill,minmax(45px,1fr));gap:8px;margin-top:10px}
+  .nomor-btn{
+    aspect-ratio:1;border:1px solid rgba(0,240,255,0.25);
+    background:rgba(8,10,24,0.85);border-radius:10px;cursor:pointer;
+    font-weight:700;color:var(--text);transition:all .2s;font-family:'Rajdhani',sans-serif;
+  }
+  .nomor-btn:hover{border-color:var(--primary);box-shadow:0 0 15px rgba(0,240,255,0.4)}
+  .nomor-btn.aktif{
+    background:linear-gradient(135deg,#00f0ff,#a855f7);color:#001018;
+    border-color:transparent;box-shadow:0 0 20px rgba(0,240,255,0.6);
+  }
+  .nomor-btn.dijawab{
+    background:linear-gradient(135deg,#22ff88,#0891b2);color:#001018;border-color:transparent;
+  }
+  .nomor-btn.aktif.dijawab{background:linear-gradient(135deg,#a855f7,#00f0ff);color:#001018}
+
+  .soal-box{
+    background:rgba(8,10,24,0.6);
+    padding:20px;border-radius:14px;margin-bottom:20px;
+    border-left:4px solid var(--primary);
+    box-shadow:inset 0 0 25px rgba(0,240,255,0.06);
+  }
+  .soal-text{
+    font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:1.22em;
+    line-height:1.8;
+    margin-bottom:18px;
+    color:var(--text);
+    font-weight:500;
+    letter-spacing:.2px;
+  }
+  .pilihan{
+    display:block;
+    padding:15px 18px;
+    margin-bottom:10px;
+    background:rgba(15,18,38,0.7);
+    border:1px solid rgba(0,240,255,0.18);
+    border-radius:11px;
+    cursor:pointer;
+    transition:all .2s;
+    color:var(--text);
+    font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:1.1em;
+    line-height:1.55;
+    font-weight:500;
+    letter-spacing:.2px;
+  }
+  .pilihan:hover{
+    border-color:var(--primary);
+    background:rgba(0,240,255,0.08);
+    box-shadow:0 0 15px rgba(0,240,255,0.25);
+  }
+  .pilihan.terpilih{
+    background:linear-gradient(135deg,#00f0ff,#0891b2);color:#001018;
+    border-color:transparent;box-shadow:0 0 20px rgba(0,240,255,0.5);
+  }
+  .pilihan.benar{
+    background:linear-gradient(135deg,#22ff88,#16a34a);color:#001018;
+    border-color:transparent;box-shadow:0 0 20px rgba(34,255,136,0.5);
+  }
+  .pilihan.salah{
+    background:linear-gradient(135deg,#ff3d5a,#b91c1c);color:#fff;
+    border-color:transparent;box-shadow:0 0 20px rgba(255,61,90,0.5);
+  }
+  .nav-ujian{display:flex;justify-content:space-between;gap:10px;margin-top:20px;flex-wrap:wrap}
+
+  .suara-toggle{
+    background:rgba(8,10,24,0.7);
+    padding:9px 18px;border-radius:22px;cursor:pointer;
+    border:1px solid rgba(0,240,255,0.4);color:var(--primary);
+    font-weight:700;transition:all .25s;font-family:'Rajdhani',sans-serif;
+    letter-spacing:.5px;font-size:.9em;
+  }
+  .suara-toggle.on{
+    background:linear-gradient(135deg,#00f0ff,#a855f7);color:#001018;
+    border-color:transparent;box-shadow:0 0 20px rgba(0,240,255,0.5);
+  }
+
+  .badge{
+    display:inline-block;padding:4px 12px;border-radius:20px;
+    font-size:.78em;font-weight:700;letter-spacing:.5px;
+    background:rgba(0,240,255,0.15);color:var(--primary);
+    border:1px solid rgba(0,240,255,0.35);margin-right:4px;
+  }
+  .badge-kelas{background:rgba(255,184,0,0.15);color:#ffb800;border-color:rgba(255,184,0,0.4)}
+
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{padding:11px;text-align:left;border-bottom:1px solid rgba(0,240,255,0.12);color:var(--text);font-weight:500}
+  th{background:rgba(0,240,255,0.08);font-weight:700;color:var(--primary);letter-spacing:.5px;font-size:.9em}
+
+  .hidden{display:none}
+
+  .alert{padding:13px 18px;border-radius:12px;margin-bottom:16px;font-weight:500;border-left:4px solid}
+  .alert-info{background:rgba(0,240,255,0.08);color:#7dd3fc;border-color:var(--primary)}
+  .alert-success{background:rgba(34,255,136,0.08);color:#86efac;border-color:var(--success)}
+  .alert-warning{background:rgba(255,184,0,0.1);color:#fcd34d;border-color:var(--warning)}
+
+  .hasil-box{text-align:center;padding:30px}
+  .nilai{
+    font-size:5em;font-weight:900;margin:20px 0;
+    font-family:'Orbitron',sans-serif;
+    background:linear-gradient(90deg,#00f0ff,#a855f7,#ff2e97);
+    background-size:200% auto;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:gradShift 4s linear infinite;
+    text-shadow:0 0 40px rgba(0,240,255,0.5);
+    filter:drop-shadow(0 0 20px rgba(0,240,255,0.4));
+  }
+
+  .tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;border-bottom:1px solid rgba(0,240,255,0.2)}
+  .tab{
+    padding:11px 20px;cursor:pointer;
+    border-bottom:3px solid transparent;
+    font-weight:700;color:var(--muted);transition:all .2s;letter-spacing:.5px;
+  }
+  .tab:hover{color:var(--primary)}
+  .tab.active{color:var(--primary);border-color:var(--primary);text-shadow:0 0 15px rgba(0,240,255,0.6)}
+
+  .item-list{
+    border:1px solid rgba(0,240,255,0.15);
+    border-radius:12px;margin-bottom:10px;padding:14px;
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;flex-wrap:wrap;background:rgba(8,10,24,0.5);
+    transition:all .2s;
+  }
+  .item-list:hover{border-color:rgba(0,240,255,0.4);box-shadow:0 0 20px rgba(0,240,255,0.1)}
+  .item-list .actions{display:flex;gap:6px}
+
+  .login-box{max-width:420px;margin:60px auto}
+  .login-box h2{
+    text-align:center;
+    font-family:'Orbitron',sans-serif;
+    background:linear-gradient(90deg,#00f0ff,#a855f7);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    letter-spacing:2px;margin-bottom:20px;
+  }
+
+  .footer{
+    text-align:center;color:var(--muted);margin-top:24px;
+    font-size:.85em;letter-spacing:.5px;opacity:.9;line-height:1.8;
+  }
+  .footer .credit{
+    display:inline-block;margin-top:4px;font-weight:700;
+    color:var(--primary);text-shadow:0 0 12px rgba(0,240,255,0.6);
+    letter-spacing:1px;
+  }
+
+  .logo-preview-box{
+    background:rgba(8,10,24,0.7);
+    border:2px dashed rgba(0,240,255,0.3);
+    border-radius:16px;padding:20px;text-align:center;margin-bottom:16px;transition:all .2s;
+  }
+  .logo-preview-box.has-image{border-style:solid;border-color:var(--success);box-shadow:0 0 25px rgba(34,255,136,0.25)}
+  .logo-preview-box img{max-width:100%;max-height:200px;object-fit:contain;margin:0 auto;display:block;border-radius:10px}
+  .logo-preview-box .placeholder{color:var(--muted);font-size:.95em}
+  .logo-preview-box .placeholder .big{font-size:4em;display:block;margin-bottom:8px}
+  .upload-area{
+    background:rgba(0,240,255,0.05);
+    border:2px dashed rgba(0,240,255,0.4);
+    border-radius:14px;padding:22px;text-align:center;cursor:pointer;transition:all .25s;
+  }
+  .upload-area:hover{background:rgba(0,240,255,0.12);border-color:var(--primary);box-shadow:0 0 25px rgba(0,240,255,0.25)}
+  .upload-area.dragover{background:rgba(0,240,255,0.2);border-color:var(--primary)}
+  .upload-area .icon{font-size:2.4em;margin-bottom:8px}
+  .logo-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center}
+  hr{border:none;border-top:1px solid rgba(0,240,255,0.15);margin:20px 0}
+
+  h3{
+    font-family:'Orbitron',sans-serif;font-size:1.05em;
+    color:var(--primary);letter-spacing:1px;margin-bottom:6px;
+  }
+  h4{font-family:'Orbitron',sans-serif;color:var(--secondary);letter-spacing:.5px}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="header-title">
+      <div class="header-logo" id="headerLogo"></div>
+      <div>
+        <h1 id="headerTitle">Ulangan Harian Siswa</h1>
+        <div class="info" id="headerInfo">Selamat datang!</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1">
+      <button class="suara-toggle on" id="btnSuara" onclick="toggleSuara()">🔊 Suara ON</button>
+      <button class="btn btn-warning" id="btnModeGuru" onclick="bukaLoginGuru()">👨‍🏫 Mode Guru</button>
+      <button class="btn btn-danger hidden" id="btnLogoutGuru" onclick="logoutGuru()">🚪 Logout</button>
+    </div>
+  </header>
+
+  <div id="app"></div>
+
+  <div class="footer">
+    ⚡ © 2026 Aplikasi Ulangan Harian — Data tersimpan di browser (localStorage)<br>
+    <span class="credit">Created by Kang Den@!</span>
+  </div>
+</div>
+
+<script>
+/* ===================== STATE & STORAGE ===================== */
+const STORAGE_KEY = 'ulanganHarianData_v3';
+let state = loadState();
+let sesiUjian = null;
+let suaraAktif = true;
+let isGuru = false;
+let tabGuruAktif = 'tampilan';
+
+function loadState(){
+  const d = localStorage.getItem(STORAGE_KEY);
+  if(d){
+    const parsed = JSON.parse(d);
+    if(!parsed.tampilan) parsed.tampilan = {};
+    if(parsed.tampilan.logo === undefined) parsed.tampilan.logo = '';
+    if(parsed.tampilan.judul === undefined) parsed.tampilan.judul = 'Ulangan Harian Siswa';
+    if(parsed.tampilan.gambarBeranda === undefined) parsed.tampilan.gambarBeranda = '';
+    if(parsed.tampilan.teksBeranda === undefined) parsed.tampilan.teksBeranda = '';
+    if(parsed.tampilan.badgeBeranda === undefined) parsed.tampilan.badgeBeranda = '✦ POWERED BY AI ✦';
+    if(!parsed.nextId) parsed.nextId = {mapel:10, materi:10, soal:10};
+    return parsed;
+  }
+  return {
+    guru: {username:'guru', password:'guru123'},
+    tampilan: {
+      logo:'',
+      judul:'Ulangan Harian Siswa',
+      gambarBeranda:'',
+      teksBeranda:'',
+      badgeBeranda:'✦ POWERED BY AI ✦'
+    },
+    mataPelajaran: [
+      {id:1, nama:'Informatika'},
+      {id:2, nama:'Matematika'}
+    ],
+    materi: [
+      {id:1, mapelId:1, nama:'Algoritma & Pemrograman'},
+      {id:2, mapelId:1, nama:'Jaringan Komputer'},
+      {id:3, mapelId:2, nama:'Aljabar'}
+    ],
+    soal: [
+      {id:1, mapelId:1, materiId:1, kelas:'VII', pertanyaan:'Apa itu algoritma?', pilihan:{A:'Bahasa pemrograman', B:'Langkah-langkah penyelesaian masalah', C:'Tipe data', D:'Sistem operasi'}, kunci:'B'},
+      {id:2, mapelId:1, materiId:1, kelas:'VII', pertanyaan:'Flowchart digunakan untuk?', pilihan:{A:'Menulis kode', B:'Menggambar', C:'Menggambarkan alur algoritma', D:'Menyimpan data'}, kunci:'C'},
+      {id:3, mapelId:1, materiId:1, kelas:'VII', pertanyaan:'Simbol persegi panjang di flowchart berarti?', pilihan:{A:'Start/End', B:'Proses', C:'Input/Output', D:'Keputusan'}, kunci:'B'}
+    ],
+    nextId: {mapel:3, materi:4, soal:4}
+  };
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){
+    alert('⚠️ Penyimpanan penuh! Coba gunakan gambar yang lebih kecil.');
+  }
+}
+
+/* ===================== HEADER DINAMIS ===================== */
+function updateHeader(){
+  const logoEl = document.getElementById('headerLogo');
+  const logo = state.tampilan.logo;
+  if(logo && logo.startsWith('data:image')){
+    logoEl.innerHTML = `<img src="${logo}" alt="logo">`;
+  } else if(logo){
+    logoEl.innerHTML = logo;
+  } else {
+    logoEl.innerHTML = '🤖';
+  }
+  document.getElementById('headerTitle').textContent = state.tampilan.judul;
+  document.title = state.tampilan.judul;
+}
+
+/* ===================== AUDIO ===================== */
+let audioCtx = null;
+function beep(freq=800, dur=0.1){
+  if(!suaraAktif) return;
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.frequency.value = freq; o.type='sine';
+    g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+dur);
+    o.start(); o.stop(audioCtx.currentTime+dur);
+  }catch(e){}
+}
+function toggleSuara(){
+  suaraAktif = !suaraAktif;
+  const btn = document.getElementById('btnSuara');
+  btn.textContent = suaraAktif ? '🔊 Suara ON' : '🔇 Suara OFF';
+  btn.classList.toggle('on', suaraAktif);
+  if(suaraAktif) beep(1000, 0.1);
+}
+
+/* ===================== RENDER UTAMA ===================== */
+function render(){
+  updateHeader();
+  const app = document.getElementById('app');
+  document.getElementById('btnLogoutGuru').classList.toggle('hidden', !isGuru);
+  document.getElementById('btnModeGuru').classList.toggle('hidden', isGuru);
+  document.getElementById('headerInfo').textContent = isGuru ? 'Mode: GURU 👨‍🏫' : 'Mode: SISWA 🎓';
+
+  if(isGuru) renderPanelGuru(app);
+  else if(sesiUjian) renderUjian(app);
+  else renderBerandaSiswa(app);
+}
+
+/* ===================== SVG NEURAL NETWORK ===================== */
+function neuralNetSVG(){
+  return `
+  <svg class="ai-net" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g stroke="rgba(0,240,255,0.4)" stroke-width="1.2" fill="none">
+      <line x1="90" y1="110" x2="260" y2="90"/>
+      <line x1="260" y1="90" x2="420" y2="160"/>
+      <line x1="420" y1="160" x2="580" y2="95"/>
+      <line x1="580" y1="95" x2="710" y2="150"/>
+      <line x1="90" y1="110" x2="160" y2="290"/>
+      <line x1="260" y1="90" x2="370" y2="300"/>
+      <line x1="420" y1="160" x2="540" y2="290"/>
+      <line x1="580" y1="95" x2="690" y2="310"/>
+      <line x1="160" y1="290" x2="370" y2="300"/>
+      <line x1="370" y1="300" x2="540" y2="290"/>
+      <line x1="540" y1="290" x2="690" y2="310"/>
+      <line x1="160" y1="290" x2="220" y2="470"/>
+      <line x1="370" y1="300" x2="410" y2="490"/>
+      <line x1="540" y1="290" x2="600" y2="475"/>
+      <line x1="690" y1="310" x2="720" y2="500"/>
+      <line x1="220" y1="470" x2="410" y2="490"/>
+      <line x1="410" y1="490" x2="600" y2="475"/>
+      <line x1="600" y1="475" x2="720" y2="500"/>
+    </g>
+    <g fill="#00f0ff">
+      <circle cx="90" cy="110" r="5"/>
+      <circle cx="260" cy="90" r="5"/>
+      <circle cx="420" cy="160" r="5"/>
+      <circle cx="580" cy="95" r="5"/>
+      <circle cx="710" cy="150" r="5"/>
+      <circle cx="160" cy="290" r="5"/>
+      <circle cx="370" cy="300" r="5"/>
+      <circle cx="540" cy="290" r="5"/>
+      <circle cx="690" cy="310" r="5"/>
+      <circle cx="220" cy="470" r="5"/>
+      <circle cx="410" cy="490" r="5"/>
+      <circle cx="600" cy="475" r="5"/>
+      <circle cx="720" cy="500" r="5"/>
+    </g>
+    <g fill="#a855f7">
+      <circle cx="260" cy="90" r="3" style="animation-delay:.5s"/>
+      <circle cx="540" cy="290" r="3" style="animation-delay:1s"/>
+      <circle cx="410" cy="490" r="3" style="animation-delay:1.5s"/>
+      <circle cx="90" cy="110" r="3" style="animation-delay:2s"/>
+      <circle cx="690" cy="310" r="3" style="animation-delay:2.5s"/>
+    </g>
+    <g fill="#ff2e97">
+      <circle cx="420" cy="160" r="4" style="animation-delay:.3s"/>
+      <circle cx="600" cy="475" r="4" style="animation-delay:1.2s"/>
+      <circle cx="370" cy="300" r="4" style="animation-delay:1.8s"/>
+    </g>
+  </svg>`;
+}
+
+/* ===================== BERANDA SISWA ===================== */
+function renderBerandaSiswa(app){
+  const gbr = state.tampilan.gambarBeranda;
+  const txt = state.tampilan.teksBeranda;
+  const judul = state.tampilan.judul;
+  const badge = state.tampilan.badgeBeranda || '✦ POWERED BY AI ✦';
+
+  app.innerHTML = `
+    <div class="hero-ai ${gbr?'has-img':''}" ${gbr?`style="--hero-img:url('${gbr}')"`:''}>
+      ${neuralNetSVG()}
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
+      <div class="scan"></div>
+      <div class="hero-content">
+        <div class="hero-badge">${badge}</div>
+        <h1 class="hero-h1">${judul}</h1>
+        <p class="hero-p">${txt || 'Selamat datang di era Kecerdasan Buatan! Uji kemampuanmu, raih masa depan gemilang bersama teknologi.'}</p>
+      </div>
+    </div>
+
+    <div class="menu-color">
+      <div class="menu-head">
+        <div class="menu-icon">🎯</div>
+        <div>
+          <h2>Mulai Ulangan Harian</h2>
+          <p>Pilih kelas, mata pelajaran, dan materi/bab untuk memulai ulangan</p>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="form-group">
+          <label>🏫 Kelas</label>
+          <select id="selKelas">
+            <option value="VII">VII</option>
+            <option value="VIII">VIII</option>
+            <option value="IX">IX</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>📖 Mata Pelajaran</label>
+          <select id="selMapel" onchange="updateMateri()">
+            ${state.mataPelajaran.map(m=>`<option value="${m.id}">${m.nama}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>📑 Materi / Bab</label>
+          <select id="selMateri"></select>
+        </div>
+      </div>
+      <button class="btn btn-launch" onclick="mulaiUlangan()">🚀 MULAI ULANGAN</button>
+    </div>
+  `;
+  updateMateri();
+}
+function updateMateri(){
+  const mapelId = parseInt(document.getElementById('selMapel').value);
+  const list = state.materi.filter(m=>m.mapelId===mapelId);
+  const sel = document.getElementById('selMateri');
+  sel.innerHTML = list.length
+    ? list.map(m=>`<option value="${m.id}">${m.nama}</option>`).join('')
+    : `<option value="">-- Belum ada materi --</option>`;
+}
+
+function mulaiUlangan(){
+  const kelas = document.getElementById('selKelas').value;
+  const mapelId = parseInt(document.getElementById('selMapel').value);
+  const materiId = parseInt(document.getElementById('selMateri').value);
+  if(!materiId){ alert('Materi belum tersedia!'); return; }
+  const soalList = state.soal.filter(s=>s.kelas===kelas && s.mapelId===mapelId && s.materiId===materiId);
+  if(soalList.length===0){ alert('Belum ada soal untuk pilihan ini. Hubungi guru.'); return; }
+  sesiUjian = { kelas, mapelId, materiId, soalList, jawaban:{}, nomorAktif:0 };
+  beep(600,0.15); setTimeout(()=>beep(900,0.15),180);
+  render();
+}
+
+/* ===================== HALAMAN UJIAN ===================== */
+function renderUjian(app){
+  const s = sesiUjian;
+  const mapel = state.mataPelajaran.find(m=>m.id===s.mapelId);
+  const materi = state.materi.find(m=>m.id===s.materiId);
+  const soal = s.soalList[s.nomorAktif];
+  const jmlDijawab = Object.keys(s.jawaban).length;
+
+  app.innerHTML = `
+    <div class="ujian-layout">
+      <div class="ujian-sidebar">
+        <div class="card" style="padding:20px">
+          <h3>🗺️ Peta Soal</h3>
+          <div style="color:var(--muted);font-size:.85em;margin-bottom:10px">
+            Dijawab: <b style="color:var(--primary)">${jmlDijawab}/${s.soalList.length}</b>
+          </div>
+          <div class="peta-soal">
+            ${s.soalList.map((_,i)=>{
+              const aktif = i===s.nomorAktif;
+              const dijawab = s.jawaban[i]!==undefined;
+              return `<button class="nomor-btn ${aktif?'aktif':''} ${dijawab?'dijawab':''}" onclick="lompatKe(${i})">${i+1}</button>`;
+            }).join('')}
+          </div>
+          <div style="margin-top:12px;font-size:.8em;color:var(--muted);line-height:1.8">
+            🟦 Aktif &nbsp; 🟩 Sudah dijawab &nbsp; ⬜ Belum
+          </div>
+          <button class="btn btn-warning btn-block" style="margin-top:14px" onclick="selesaiUlangan()">✅ Selesai</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="padding:24px">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+            <div>
+              <span class="badge badge-kelas">Kelas ${s.kelas}</span>
+              <span class="badge">${mapel.nama}</span>
+              <span class="badge" style="background:rgba(255,46,151,0.15);color:#ff2e97;border-color:rgba(255,46,151,0.4)">${materi.nama}</span>
+            </div>
+          </div>
+
+          <div class="soal-box">
+            <div style="color:var(--muted);font-size:.9em;margin-bottom:6px">Soal ${s.nomorAktif+1} dari ${s.soalList.length}</div>
+            <div class="soal-text"><b>${s.nomorAktif+1}.</b> ${soal.pertanyaan}</div>
+            ${['A','B','C','D'].map(k=>`
+              <div class="pilihan ${s.jawaban[s.nomorAktif]===k?'terpilih':''}" onclick="pilihJawaban('${k}')">
+                <b>${k}.</b> ${soal.pilihan[k]}
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="nav-ujian">
+            <button class="btn btn-secondary" onclick="pindahNomor(-1)" ${s.nomorAktif===0?'disabled style=opacity:.5':''}>◀ Sebelumnya</button>
+            <button class="btn btn-primary" onclick="pindahNomor(1)" ${s.nomorAktif===s.soalList.length-1?'disabled style=opacity:.5':''}>Selanjutnya ▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function pilihJawaban(k){ sesiUjian.jawaban[sesiUjian.nomorAktif] = k; beep(700, 0.08); render(); }
+function pindahNomor(delta){
+  const n = sesiUjian.nomorAktif + delta;
+  if(n>=0 && n<sesiUjian.soalList.length){ sesiUjian.nomorAktif = n; beep(500,0.05); render(); }
+}
+function lompatKe(i){ sesiUjian.nomorAktif = i; beep(500,0.05); render(); }
+
+function selesaiUlangan(){
+  const belum = sesiUjian.soalList.length - Object.keys(sesiUjian.jawaban).length;
+  if(belum>0 && !confirm(`Masih ada ${belum} soal belum dijawab. Tetap selesai?`)) return;
+  let benar = 0;
+  sesiUjian.soalList.forEach((soal,i)=>{ if(sesiUjian.jawaban[i]===soal.kunci) benar++; });
+  const total = sesiUjian.soalList.length;
+  const nilai = Math.round((benar/total)*100);
+  beep(1000,0.15); setTimeout(()=>beep(1300,0.2),200);
+  const mapel = state.mataPelajaran.find(m=>m.id===sesiUjian.mapelId);
+  const materi = state.materi.find(m=>m.id===sesiUjian.materiId);
+
+  document.getElementById('app').innerHTML = `
+    <div class="card hasil-box">
+      <h2 style="font-family:'Orbitron',sans-serif;color:var(--primary);letter-spacing:2px">🎉 ULANGAN SELESAI!</h2>
+      <div style="color:var(--muted);margin-top:10px">${mapel.nama} • ${materi.nama} • Kelas ${sesiUjian.kelas}</div>
+      <div class="nilai">${nilai}</div>
+      <div style="font-size:1.1em;color:var(--muted)">
+        Benar: <b style="color:var(--success)">${benar}</b> | 
+        Salah: <b style="color:var(--danger)">${total-benar}</b> | 
+        Total: <b style="color:var(--primary)">${total}</b>
+      </div>
+      <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="lihatKunciSiswa()">🔑 Lihat Kunci Jawaban</button>
+        <button class="btn btn-success" onclick="kembaliBeranda()">🏠 Kembali ke Beranda</button>
+      </div>
+    </div>
+  `;
+}
+function lihatKunciSiswa(){
+  const s = sesiUjian;
+  document.getElementById('app').innerHTML = `
+    <div class="card">
+      <h2 style="color:var(--primary);margin-bottom:16px;font-family:'Orbitron',sans-serif;letter-spacing:1px">🔑 KUNCI JAWABAN (REVIEW)</h2>
+      ${s.soalList.map((soal,i)=>{
+        const jw = s.jawaban[i];
+        const benar = jw===soal.kunci;
+        return `
+          <div class="soal-box" style="border-left-color:${jw===undefined?'var(--warning)':(benar?'var(--success)':'var(--danger)')}">
+            <div class="soal-text"><b>${i+1}.</b> ${soal.pertanyaan}</div>
+            ${['A','B','C','D'].map(k=>{
+              let cls='pilihan';
+              if(k===soal.kunci) cls+=' benar';
+              else if(k===jw && k!==soal.kunci) cls+=' salah';
+              return `<div class="${cls}"><b>${k}.</b> ${soal.pilihan[k]} ${k===soal.kunci?'✓':''} ${k===jw && k!==soal.kunci?'✗':''}</div>`;
+            }).join('')}
+            <div style="margin-top:8px;font-size:.9em;color:var(--muted)">
+              Jawaban kamu: <b>${jw||'-'}</b> | Kunci: <b style="color:var(--success)">${soal.kunci}</b>
+            </div>
+          </div>
+        `;
+      }).join('')}
+      <button class="btn btn-success btn-block" onclick="kembaliBeranda()">🏠 Kembali ke Beranda</button>
+    </div>
+  `;
+}
+function kembaliBeranda(){ sesiUjian=null; render(); }
+
+/* ===================== LOGIN GURU ===================== */
+function bukaLoginGuru(){
+  if(isGuru){ render(); return; }
+  document.getElementById('app').innerHTML = `
+    <div class="card login-box">
+      <h2>🔐 LOGIN GURU</h2>
+      <div class="alert alert-warning">Default: username <b>guru</b> | password <b>guru123</b></div>
+      <div class="form-group"><label>Username</label><input id="loginUser" value="guru"></div>
+      <div class="form-group"><label>Password</label><input id="loginPass" type="password"></div>
+      <button class="btn btn-primary btn-block" onclick="doLogin()">Masuk</button>
+      <button class="btn btn-secondary btn-block" style="margin-top:8px" onclick="render()">Batal</button>
+    </div>
+  `;
+  setTimeout(()=>document.getElementById('loginPass').focus(),100);
+}
+function doLogin(){
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if(u===state.guru.username && p===state.guru.password){ isGuru = true; beep(1000,0.1); render(); }
+  else { alert('Username atau password salah!'); beep(200,0.3); }
+}
+function logoutGuru(){ isGuru=false; render(); }
+
+/* ===================== PANEL GURU ===================== */
+function renderPanelGuru(app){
+  app.innerHTML = `
+    <div class="card">
+      <h2 style="font-family:'Orbitron',sans-serif;color:var(--primary);margin-bottom:16px;letter-spacing:1px">👨‍🏫 PANEL GURU — BANK SOAL</h2>
+      <div class="tabs">
+        <div class="tab ${tabGuruAktif==='tampilan'?'active':''}" onclick="setTab('tampilan')">🎨 Tampilan</div>
+        <div class="tab ${tabGuruAktif==='mapel'?'active':''}" onclick="setTab('mapel')">📖 Mata Pelajaran</div>
+        <div class="tab ${tabGuruAktif==='materi'?'active':''}" onclick="setTab('materi')">📑 Materi / Bab</div>
+        <div class="tab ${tabGuruAktif==='soal'?'active':''}" onclick="setTab('soal')">📝 Bank Soal</div>
+        <div class="tab ${tabGuruAktif==='kunci'?'active':''}" onclick="setTab('kunci')">🔑 Kunci Jawaban</div>
+        <div class="tab ${tabGuruAktif==='akun'?'active':''}" onclick="setTab('akun')">⚙️ Akun Guru</div>
+      </div>
+      <div id="panelGuruContent"></div>
+    </div>
+  `;
+  renderTabGuru();
+}
+function setTab(t){ tabGuruAktif=t; renderPanelGuru(document.getElementById('app')); }
+function renderTabGuru(){
+  const c = document.getElementById('panelGuruContent');
+  if(tabGuruAktif==='tampilan') renderTabTampilan(c);
+  else if(tabGuruAktif==='mapel') renderTabMapel(c);
+  else if(tabGuruAktif==='materi') renderTabMateri(c);
+  else if(tabGuruAktif==='soal') renderTabSoal(c);
+  else if(tabGuruAktif==='kunci') renderTabKunci(c);
+  else if(tabGuruAktif==='akun') renderTabAkun(c);
+}
+
+/* ===================== TAB TAMPILAN ===================== */
+function renderTabTampilan(c){
+  const logo = state.tampilan.logo;
+  const gbrBeranda = state.tampilan.gambarBeranda;
+  const txtBeranda = state.tampilan.teksBeranda;
+  const badgeBeranda = state.tampilan.badgeBeranda || '✦ POWERED BY AI ✦';
+  const hasLogo = logo && logo.startsWith('data:image');
+  const isEmoji = logo && !hasLogo;
+
+  c.innerHTML = `
+    <h3>🖼️ Logo Aplikasi (Kiri Atas)</h3>
+    <div class="logo-preview-box ${hasLogo?'has-image':''}">
+      ${hasLogo 
+        ? `<img src="${logo}" alt="Logo" style="max-width:150px">`
+        : `<div class="placeholder"><span class="big">${isEmoji?logo:'🤖'}</span>Belum ada logo${isEmoji?' (emoji)':''}</div>`
+      }
+    </div>
+
+    <div class="upload-area" onclick="document.getElementById('fileInputLogo').click()">
+      <div class="icon">📤</div>
+      <div style="font-weight:700;margin-bottom:4px">Klik untuk upload Logo Aplikasi</div>
+      <div style="color:var(--muted);font-size:.9em">Format: JPG, PNG, GIF (maks 2MB)</div>
+      <input type="file" id="fileInputLogo" accept="image/*" style="display:none" onchange="handleFileUpload(event, 'logo')">
+    </div>
+
+    <div class="logo-actions" style="margin-bottom:24px">
+      <button class="btn btn-danger btn-sm" onclick="hapusGambar('logo')">🗑️ Hapus Logo</button>
+      <button class="btn btn-secondary btn-sm" onclick="kembalikanLogoDefault()">↩️ Default (🤖)</button>
+    </div>
+
+    <hr>
+
+    <h3>🖼️ Gambar Background Beranda (Tengah Atas)</h3>
+    <div class="logo-preview-box ${gbrBeranda ? 'has-image' : ''}">
+      ${gbrBeranda 
+        ? `<img src="${gbrBeranda}" alt="Gambar Beranda">`
+        : `<div class="placeholder"><span class="big">🤖</span>Belum ada gambar beranda<br><small style="color:var(--muted)">Background AI neural network otomatis ditampilkan</small></div>`
+      }
+    </div>
+
+    <div class="upload-area" onclick="document.getElementById('fileInputBeranda').click()">
+      <div class="icon">📤</div>
+      <div style="font-weight:700;margin-bottom:4px">Klik untuk upload Gambar Beranda</div>
+      <div style="color:var(--muted);font-size:.9em">Format: JPG, PNG, GIF (maks 2MB) — misal gambar perkembangan AI</div>
+      <input type="file" id="fileInputBeranda" accept="image/*" style="display:none" onchange="handleFileUpload(event, 'gambarBeranda')">
+    </div>
+
+    <div class="logo-actions" style="margin-bottom:24px">
+      <button class="btn btn-danger btn-sm" onclick="hapusGambar('gambarBeranda')">🗑️ Hapus Gambar Beranda</button>
+    </div>
+
+    <hr>
+
+    <h3>📝 Teks & Judul</h3>
+    <div class="form-group">
+      <label>Judul Aplikasi (Header):</label>
+      <input id="inputJudul" value="${state.tampilan.judul}" maxlength="60">
+    </div>
+    <div class="form-group">
+      <label>Teks Beranda (Di bawah gambar):</label>
+      <textarea id="inputTeksBeranda" rows="2" placeholder="Contoh: Selamat datang di era AI! Kerjakan dengan jujur.">${txtBeranda}</textarea>
+    </div>
+    <div class="form-group">
+      <label>🏷️ Badge / Label Hero (tulisan kecil di atas judul beranda):</label>
+      <input id="inputBadgeBeranda" value="${badgeBeranda}" maxlength="40" placeholder="Contoh: ✦ POWERED BY AI ✦">
+      <small style="color:var(--muted);font-size:.82em;display:block;margin-top:6px">
+        💡 Kosongkan untuk kembali ke default <b>✦ POWERED BY AI ✦</b>
+      </small>
+    </div>
+
+    <button class="btn btn-success" onclick="simpanTampilan()">💾 Simpan Semua Perubahan</button>
+  `;
+}
+
+function handleFileUpload(event, target){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){
+    alert('❌ File harus berupa gambar! (JPG, PNG, GIF)');
+    return;
+  }
+  if(file.size > 2 * 1024 * 1024){
+    alert('❌ Ukuran file terlalu besar! Maksimal 2MB sebelum kompresi.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    const maxW = target === 'logo' ? 200 : 800;
+    const maxH = target === 'logo' ? 200 : 400;
+    compressImage(e.target.result, maxW, maxH, 0.85, (compressed)=>{
+      state.tampilan[target] = compressed;
+      updateHeader();
+      renderTabGuru();
+      beep(1000, 0.1);
+      alert(`✅ ${target === 'logo' ? 'Logo' : 'Gambar beranda'} berhasil diupload!`);
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function compressImage(dataUrl, maxW, maxH, quality, callback){
+  const img = new Image();
+  img.onload = ()=>{
+    let w = img.width, h = img.height;
+    if(w > maxW || h > maxH){
+      const ratio = Math.min(maxW/w, maxH/h);
+      w = Math.round(w * ratio);
+      h = Math.round(h * ratio);
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    const result = canvas.toDataURL('image/jpeg', quality);
+    callback(result);
+  };
+  img.onerror = ()=>alert('❌ Gagal memuat gambar.');
+  img.src = dataUrl;
+}
+function hapusGambar(target){
+  if(!confirm(`Hapus ${target === 'logo' ? 'logo' : 'gambar beranda'} saat ini?`)) return;
+  state.tampilan[target] = '';
+  updateHeader();
+  renderTabGuru();
+}
+function kembalikanLogoDefault(){
+  state.tampilan.logo = '🤖';
+  updateHeader();
+  renderTabGuru();
+}
+function simpanTampilan(){
+  const judul = document.getElementById('inputJudul').value.trim() || 'Ulangan Harian Siswa';
+  const teks = document.getElementById('inputTeksBeranda').value.trim();
+  const badge = document.getElementById('inputBadgeBeranda').value.trim() || '✦ POWERED BY AI ✦';
+
+  state.tampilan.judul = judul;
+  state.tampilan.teksBeranda = teks;
+  state.tampilan.badgeBeranda = badge;
+
+  saveState();
+  updateHeader();
+  beep(1000,0.1);
+  alert('✅ Tampilan berhasil disimpan!');
+  renderTabGuru();
+}
+
+/* ===================== TAB MAPEL ===================== */
+function renderTabMapel(c){
+  c.innerHTML = `
+    <h3>Tambah Mata Pelajaran</h3>
+    <div style="display:flex;gap:8px;margin:10px 0 20px">
+      <input id="nmMapel" placeholder="Nama mata pelajaran (contoh: IPA)">
+      <button class="btn btn-primary" onclick="tambahMapel()">➕ Tambah</button>
+    </div>
+    <h3>Daftar Mata Pelajaran</h3>
+    ${state.mataPelajaran.map(m=>`
+      <div class="item-list">
+        <div><b>${m.nama}</b> <span style="color:var(--muted);font-size:.85em">(${state.soal.filter(s=>s.mapelId===m.id).length} soal)</span></div>
+        <div class="actions">
+          <button class="btn btn-warning btn-sm" onclick="renameMapel(${m.id})">✏️ Rename</button>
+          <button class="btn btn-danger btn-sm" onclick="hapusMapel(${m.id})">🗑️ Hapus</button>
+        </div>
+      </div>
+    `).join('') || '<p style="color:var(--muted)">Belum ada mata pelajaran.</p>'}
+  `;
+}
+function tambahMapel(){
+  const n = document.getElementById('nmMapel').value.trim();
+  if(!n) return alert('Nama tidak boleh kosong!');
+  state.mataPelajaran.push({id:state.nextId.mapel++, nama:n});
+  saveState(); renderTabGuru();
+}
+function renameMapel(id){
+  const m = state.mataPelajaran.find(x=>x.id===id);
+  const n = prompt('Nama baru:', m.nama);
+  if(n && n.trim()){ m.nama = n.trim(); saveState(); renderTabGuru(); }
+}
+function hapusMapel(id){
+  if(!confirm('Hapus mata pelajaran ini? Semua materi & soal terkait juga akan dihapus.')) return;
+  state.mataPelajaran = state.mataPelajaran.filter(x=>x.id!==id);
+  state.materi = state.materi.filter(m=>m.mapelId!==id);
+  state.soal = state.soal.filter(s=>s.mapelId!==id);
+  saveState(); renderTabGuru();
+}
+
+/* ===================== TAB MATERI ===================== */
+function renderTabMateri(c){
+  c.innerHTML = `
+    <h3>Tambah Materi / Bab</h3>
+    <div class="grid-2" style="margin:10px 0 20px">
+      <select id="fmMapel">
+        ${state.mataPelajaran.map(m=>`<option value="${m.id}">${m.nama}</option>`).join('')}
+      </select>
+      <div style="display:flex;gap:8px">
+        <input id="nmMateri" placeholder="Nama materi/bab">
+        <button class="btn btn-primary" onclick="tambahMateri()">➕ Tambah</button>
+      </div>
+    </div>
+    <h3>Daftar Materi</h3>
+    ${state.mataPelajaran.map(mp=>{
+      const list = state.materi.filter(m=>m.mapelId===mp.id);
+      if(list.length===0) return '';
+      return `
+        <h4 style="margin-top:14px">${mp.nama}</h4>
+        ${list.map(m=>`
+          <div class="item-list">
+            <div><b>${m.nama}</b> <span style="color:var(--muted);font-size:.85em">(${state.soal.filter(s=>s.materiId===m.id).length} soal)</span></div>
+            <div class="actions">
+              <button class="btn btn-warning btn-sm" onclick="renameMateri(${m.id})">✏️ Rename</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusMateri(${m.id})">🗑️ Hapus</button>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }).join('') || '<p style="color:var(--muted)">Belum ada materi.</p>'}
+  `;
+}
+function tambahMateri(){
+  const mapelId = parseInt(document.getElementById('fmMapel').value);
+  const n = document.getElementById('nmMateri').value.trim();
+  if(!n) return alert('Nama tidak boleh kosong!');
+  if(!mapelId) return alert('Pilih mata pelajaran dulu!');
+  state.materi.push({id:state.nextId.materi++, mapelId, nama:n});
+  saveState(); renderTabGuru();
+}
+function renameMateri(id){
+  const m = state.materi.find(x=>x.id===id);
+  const n = prompt('Nama baru:', m.nama);
+  if(n && n.trim()){ m.nama = n.trim(); saveState(); renderTabGuru(); }
+}
+function hapusMateri(id){
+  if(!confirm('Hapus materi ini? Semua soal terkait juga akan dihapus.')) return;
+  state.materi = state.materi.filter(x=>x.id!==id);
+  state.soal = state.soal.filter(s=>s.materiId!==id);
+  saveState(); renderTabGuru();
+}
+
+/* ===================== TAB BANK SOAL ===================== */
+let soalEditId = null;
+function renderTabSoal(c){
+  c.innerHTML = `
+    <h3>Filter Soal</h3>
+    <div class="grid-3" style="margin:10px 0 20px">
+      <select id="fKelas" onchange="renderListSoal()">
+        <option value="">-- Semua Kelas --</option>
+        <option value="VII">VII</option><option value="VIII">VIII</option><option value="IX">IX</option>
+      </select>
+      <select id="fMapel" onchange="renderListSoal()">
+        <option value="">-- Semua Mapel --</option>
+        ${state.mataPelajaran.map(m=>`<option value="${m.id}">${m.nama}</option>`).join('')}
+      </select>
+      <select id="fMateri" onchange="renderListSoal()">
+        <option value="">-- Semua Materi --</option>
+        ${state.materi.map(m=>`<option value="${m.id}">${m.nama}</option>`).join('')}
+      </select>
+    </div>
+    <button class="btn btn-success" onclick="bukaFormSoal()">➕ Tambah Soal Baru</button>
+    <div id="formSoalArea" style="margin-top:16px"></div>
+    <h3 style="margin-top:20px">Daftar Soal</h3>
+    <div id="listSoalArea"></div>
+  `;
+  renderListSoal();
+}
+function renderListSoal(){
+  const fK = document.getElementById('fKelas').value;
+  const fM = document.getElementById('fMapel').value ? parseInt(document.getElementById('fMapel').value) : null;
+  const fMt = document.getElementById('fMateri').value ? parseInt(document.getElementById('fMateri').value) : null;
+  let list = state.soal.slice();
+  if(fK) list = list.filter(s=>s.kelas===fK);
+  if(fM) list = list.filter(s=>s.mapelId===fM);
+  if(fMt) list = list.filter(s=>s.materiId===fMt);
+  const area = document.getElementById('listSoalArea');
+  if(list.length===0){ area.innerHTML = '<p style="color:var(--muted);margin-top:10px">Tidak ada soal.</p>'; return; }
+  area.innerHTML = list.map(s=>{
+    const mp = state.mataPelajaran.find(m=>m.id===s.mapelId);
+    const mt = state.materi.find(m=>m.id===s.materiId);
+    return `
+      <div class="item-list" style="flex-direction:column;align-items:stretch">
+        <div style="width:100%">
+          <div style="margin-bottom:6px">
+            <span class="badge badge-kelas">${s.kelas}</span>
+            <span class="badge">${mp?mp.nama:'-'}</span>
+            <span class="badge" style="background:rgba(255,46,151,0.15);color:#ff2e97;border-color:rgba(255,46,151,0.4)">${mt?mt.nama:'-'}</span>
+            <span class="badge" style="background:rgba(34,255,136,0.15);color:#22ff88;border-color:rgba(34,255,136,0.4)">Kunci: ${s.kunci}</span>
+          </div>
+          <div style="font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05em;line-height:1.6">${s.pertanyaan}</div>
+          <div style="color:var(--muted);font-size:.9em;margin-top:4px;font-family:'Plus Jakarta Sans',sans-serif;line-height:1.6">
+            A. ${s.pilihan.A} | B. ${s.pilihan.B} | C. ${s.pilihan.C} | D. ${s.pilihan.D}
+          </div>
+        </div>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn btn-warning btn-sm" onclick="bukaFormSoal(${s.id})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="hapusSoal(${s.id})">🗑️ Hapus</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+function bukaFormSoal(id=null){
+  soalEditId = id;
+  const s = id ? state.soal.find(x=>x.id===id) : {kelas:'VII', mapelId:state.mataPelajaran[0]?.id, materiId:state.materi[0]?.id, pertanyaan:'', pilihan:{A:'',B:'',C:'',D:''}, kunci:'A'};
+  const mapelId = s.mapelId || (state.mataPelajaran[0]?.id);
+  const materiList = state.materi.filter(m=>m.mapelId===mapelId);
+  document.getElementById('formSoalArea').innerHTML = `
+    <div class="card" style="background:rgba(0,240,255,0.04);border:2px dashed rgba(0,240,255,0.4)">
+      <h3>${id?'✏️ Edit Soal':'➕ Tambah Soal Baru'}</h3>
+      <div class="grid-3" style="margin-top:10px">
+        <div class="form-group">
+          <label>Kelas</label>
+          <select id="fsKelas">
+            <option value="VII" ${s.kelas==='VII'?'selected':''}>VII</option>
+            <option value="VIII" ${s.kelas==='VIII'?'selected':''}>VIII</option>
+            <option value="IX" ${s.kelas==='IX'?'selected':''}>IX</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mata Pelajaran</label>
+          <select id="fsMapel" onchange="updateFsMateri()">
+            ${state.mataPelajaran.map(m=>`<option value="${m.id}" ${m.id===mapelId?'selected':''}>${m.nama}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Materi</label>
+          <select id="fsMateri">
+            ${materiList.map(m=>`<option value="${m.id}" ${m.id===s.materiId?'selected':''}>${m.nama}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Pertanyaan</label>
+        <textarea id="fsPertanyaan" rows="2">${s.pertanyaan}</textarea>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label>Pilihan A</label><input id="fsA" value="${s.pilihan.A}"></div>
+        <div class="form-group"><label>Pilihan B</label><input id="fsB" value="${s.pilihan.B}"></div>
+        <div class="form-group"><label>Pilihan C</label><input id="fsC" value="${s.pilihan.C}"></div>
+        <div class="form-group"><label>Pilihan D</label><input id="fsD" value="${s.pilihan.D}"></div>
+      </div>
+      <div class="form-group">
+        <label>Kunci Jawaban</label>
+        <select id="fsKunci">
+          <option value="A" ${s.kunci==='A'?'selected':''}>A</option>
+          <option value="B" ${s.kunci==='B'?'selected':''}>B</option>
+          <option value="C" ${s.kunci==='C'?'selected':''}>C</option>
+          <option value="D" ${s.kunci==='D'?'selected':''}>D</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-success" onclick="simpanSoal()">💾 Simpan</button>
+        <button class="btn btn-secondary" onclick="batalSoal()">Batal</button>
+      </div>
+    </div>
+  `;
+}
+function updateFsMateri(){
+  const mapelId = parseInt(document.getElementById('fsMapel').value);
+  const list = state.materi.filter(m=>m.mapelId===mapelId);
+  document.getElementById('fsMateri').innerHTML = list.map(m=>`<option value="${m.id}">${m.nama}</option>`).join('');
+}
+function simpanSoal(){
+  const data = {
+    kelas: document.getElementById('fsKelas').value,
+    mapelId: parseInt(document.getElementById('fsMapel').value),
+    materiId: parseInt(document.getElementById('fsMateri').value),
+    pertanyaan: document.getElementById('fsPertanyaan').value.trim(),
+    pilihan:{
+      A: document.getElementById('fsA').value.trim(),
+      B: document.getElementById('fsB').value.trim(),
+      C: document.getElementById('fsC').value.trim(),
+      D: document.getElementById('fsD').value.trim()
+    },
+    kunci: document.getElementById('fsKunci').value
+  };
+  if(!data.pertanyaan) return alert('Pertanyaan harus diisi!');
+  if(!data.pilihan.A||!data.pilihan.B||!data.pilihan.C||!data.pilihan.D) return alert('Semua pilihan A-D harus diisi!');
+  if(!data.materiId) return alert('Pilih materi!');
+  if(soalEditId){
+    const s = state.soal.find(x=>x.id===soalEditId);
+    Object.assign(s, data);
+  } else {
+    data.id = state.nextId.soal++;
+    state.soal.push(data);
+  }
+  saveState(); soalEditId=null; renderTabGuru();
+}
+function batalSoal(){ soalEditId=null; document.getElementById('formSoalArea').innerHTML=''; }
+function hapusSoal(id){
+  if(!confirm('Hapus soal ini?')) return;
+  state.soal = state.soal.filter(s=>s.id!==id);
+  saveState(); renderTabGuru();
+}
+
+/* ===================== TAB KUNCI ===================== */
+function renderTabKunci(c){
+  c.innerHTML = `
+    <div class="alert alert-info">Kunci jawaban hanya untuk guru.</div>
+    <div class="grid-3" style="margin-bottom:16px">
+      <select id="kKelas" onchange="renderKunciList()">
+        <option value="">-- Semua Kelas --</option>
+        <option value="VII">VII</option><option value="VIII">VIII</option><option value="IX">IX</option>
+      </select>
+      <select id="kMapel" onchange="renderKunciList()">
+        <option value="">-- Semua Mapel --</option>
+        ${state.mataPelajaran.map(m=>`<option value="${m.id}">${m.nama}</option>`).join('')}
+      </select>
+      <select id="kMateri" onchange="renderKunciList()">
+        <option value="">-- Semua Materi --</option>
+        ${state.materi.map(m=>`<option value="${m.id}">${m.nama}</option>`).join('')}
+      </select>
+    </div>
+    <div id="kunciList"></div>
+  `;
+  renderKunciList();
+}
+function renderKunciList(){
+  const fK = document.getElementById('kKelas').value;
+  const fM = document.getElementById('kMapel').value ? parseInt(document.getElementById('kMapel').value) : null;
+  const fMt = document.getElementById('kMateri').value ? parseInt(document.getElementById('kMateri').value) : null;
+  let list = state.soal.slice();
+  if(fK) list = list.filter(s=>s.kelas===fK);
+  if(fM) list = list.filter(s=>s.mapelId===fM);
+  if(fMt) list = list.filter(s=>s.materiId===fMt);
+  const area = document.getElementById('kunciList');
+  if(list.length===0){ area.innerHTML='<p style="color:var(--muted)">Tidak ada soal.</p>'; return; }
+  area.innerHTML = `
+    <table>
+      <thead><tr><th>#</th><th>Kelas</th><th>Mapel</th><th>Materi</th><th>Pertanyaan</th><th>Kunci</th></tr></thead>
+      <tbody>
+        ${list.map((s,i)=>{
+          const mp = state.mataPelajaran.find(m=>m.id===s.mapelId);
+          const mt = state.materi.find(m=>m.id===s.materiId);
+          return `<tr>
+            <td>${i+1}</td><td>${s.kelas}</td>
+            <td>${mp?mp.nama:'-'}</td><td>${mt?mt.nama:'-'}</td>
+            <td>${s.pertanyaan.substring(0,60)}${s.pertanyaan.length>60?'...':''}</td>
+            <td><b style="color:var(--success)">${s.kunci}</b></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+/* ===================== TAB AKUN ===================== */
+function renderTabAkun(c){
+  c.innerHTML = `
+    <h3>Ubah Akun Login Guru</h3>
+    <div class="form-group"><label>Username Baru</label><input id="akUser" value="${state.guru.username}"></div>
+    <div class="form-group"><label>Password Baru</label><input id="akPass" type="text" value="${state.guru.password}"></div>
+    <button class="btn btn-primary" onclick="simpanAkun()">💾 Simpan</button>
+    <hr>
+    <h3>Reset Semua Data</h3>
+    <div class="alert alert-warning">Peringatan: Ini akan menghapus semua data termasuk logo dan gambar beranda!</div>
+    <button class="btn btn-danger" onclick="resetData()">🗑️ Reset Semua Data</button>
+  `;
+}
+function simpanAkun(){
+  const u = document.getElementById('akUser').value.trim();
+  const p = document.getElementById('akPass').value;
+  if(!u||!p) return alert('Username dan password tidak boleh kosong!');
+  state.guru = {username:u, password:p};
+  saveState(); alert('Akun berhasil diperbarui!');
+}
+function resetData(){
+  if(!confirm('Yakin reset semua data? Tindakan ini tidak bisa dibatalkan!')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = loadState();
+  alert('Data berhasil direset!');
+  render();
+}
+
+/* ===================== INIT ===================== */
+render();
+</script>
+</body>
+</html>
